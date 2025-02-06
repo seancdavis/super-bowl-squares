@@ -35,7 +35,7 @@ export function FindBoard() {
           onChange={(e) => setBoardId(e.target.value.toUpperCase())}
           placeholder="Enter board code"
           className="w-full p-2 border border-gray-300 rounded"
-          maxLength={6}
+          maxLength={8}
           disabled={isLoading}
         />
       </div>
