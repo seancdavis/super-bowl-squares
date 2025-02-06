@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getBoard, updateBoard } from '../../../lib/db';
+import { getBoard, updateBoard, type Board } from '../../../lib/db';
 import { shuffleArray } from '../../../lib/utils';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -48,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
     };
 
-    await updateBoard(board.id, updatedBoard);
+    await updateBoard(board.id, updatedBoard as Board);
 
     return new Response(JSON.stringify({ success: true }));
   } catch (error) {

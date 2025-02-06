@@ -18,7 +18,7 @@ export const POST: APIRoute = async ({ request }) => {
       ...board,
       display_name,
       max_squares_per_contestant: maxSquares,
-      state: 'choosing',
+      state: 'choosing' as const,
     };
 
     await updateBoard(board.id, updatedBoard);
