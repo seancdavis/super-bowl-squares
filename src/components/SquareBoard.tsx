@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import type { Board } from '../lib/db';
 
 interface Props {
