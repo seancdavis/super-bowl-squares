@@ -17,11 +17,9 @@ if (!board) {
     <div class="max-w-6xl mx-auto">
       {
         board.state === 'setup' ? (
-          // <BoardSetup board={board} client:load />
-          <div>Board Setup</div>
+          <BoardSetup board={board} client:load />
         ) : (
-          // <SquareBoard board={board} client:load />
-          <div>Square Board</div>
+          <SquareBoard board={board} client:load />
         )
       }
     </div>

@@ -139,7 +139,7 @@ export function SquareBoard({ board }: Props) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">{board.displayName}</h1>
+        <h1 className="text-3xl font-bold">{board.display_name}</h1>
         <button
           onClick={handleShare}
           className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
@@ -176,7 +176,7 @@ export function SquareBoard({ board }: Props) {
             <div className="bg-white p-4 rounded-lg shadow-md">
               <p>
                 You have selected {Object.values(board.squares).filter((n) => n === name).length} of{' '}
-                {board.maxSquaresPerContestant} squares
+                {board.max_squares_per_contestant} squares
               </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>

@@ -3,9 +3,9 @@ import { getBoard, updateBoard } from '../../../lib/db';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { id, displayName, maxSquares } = await request.json();
+    const { id, display_name, maxSquares } = await request.json();
 
-    if (!id || !displayName || !maxSquares) {
+    if (!id || !display_name || !maxSquares) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
     }
 
@@ -16,8 +16,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     const updatedBoard = {
       ...board,
-      displayName,
-      maxSquaresPerContestant: maxSquares,
+      display_name,
+      max_squares_per_contestant: maxSquares,
       state: 'choosing',
     };
 

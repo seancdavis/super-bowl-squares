@@ -21,9 +21,9 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const currentSquares = Object.entries(board.squares).filter(([_, owner]) => owner === name);
-    if (currentSquares.length >= board.maxSquaresPerContestant) {
+    if (currentSquares.length >= board.max_squares_per_contestant) {
       return new Response(
-        JSON.stringify({ error: `Maximum squares (${board.maxSquaresPerContestant}) reached` }),
+        JSON.stringify({ error: `Maximum squares (${board.max_squares_per_contestant}) reached` }),
         { status: 400 },
       );
     }
