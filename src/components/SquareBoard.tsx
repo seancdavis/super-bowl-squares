@@ -196,12 +196,20 @@ export function SquareBoard({ board: initialBoard }: Props) {
           <div className="bg-white p-8 rounded-lg shadow-md">
             {board.teams ? (
               <div className="grid grid-cols-[auto_repeat(10,1fr)]">
-                <div className="col-span-1"></div>
+                <div className="col-span-12 text-center font-bold mb-2">
+                  {board.teams.axis1.team}
+                </div>
+                <div className="col-span-2"></div>
                 {board.teams.axis1.numbers.map((n, i) => (
                   <div key={i} className="p-4 font-bold text-center">
                     {n}
                   </div>
                 ))}
+                <div className="row-span-10 flex items-center justify-center">
+                  <div className="-rotate-90 font-bold whitespace-nowrap">
+                    {board.teams.axis2.team}
+                  </div>
+                </div>
                 {board.teams.axis2.numbers.map((n, i) => (
                   <React.Fragment key={i}>
                     <div className="p-4 font-bold text-right">{n}</div>
