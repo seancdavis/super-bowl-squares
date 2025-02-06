@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { BoardSetup } from '../../components/BoardSetup';
+import { SquareBoard } from '../../components/SquareBoard';
+import { getBoard } from '../../lib/db';
+
+const { id } = Astro.params;
+const board = await getBoard(id!);
+
+if (!board) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout title={board.displayName || 'Super Bowl Squares'}>
+  <main class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+      {board.state === 'setup' ? (
+        <BoardSetup board={board} client:load />
+      ) : (
+        <SquareBoard board={board} client:load />
+      )}
+    </div>
+  </main>
+</Layout>
