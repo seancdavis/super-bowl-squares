@@ -1,10 +1,7 @@
+import { randomBytes } from 'crypto';
+
 export function generateBoardId(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+  return randomBytes(4).toString('hex').toUpperCase();
 }
 
 export function shuffleArray<T>(array: T[]): T[] {
