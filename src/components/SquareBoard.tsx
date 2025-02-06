@@ -6,7 +6,8 @@ interface Props {
   board: Board;
 }
 
-export function SquareBoard({ board }: Props) {
+export function SquareBoard({ board: initialBoard }: Props) {
+  const [board, setBoard] = useState(initialBoard);
   const [name, setName] = useState('');
   const [showNameInput, setShowNameInput] = useState(true);
   const [error, setError] = useState('');
@@ -62,9 +63,16 @@ export function SquareBoard({ board }: Props) {
         throw new Error(data.error || 'Failed to update square');
       }
 
-      window.location.reload();
+      setBoard((prevBoard) => ({
+        ...prevBoard,
+        squares: {
+          ...prevBoard.squares,
+          [position]: name,
+        },
+      }));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update square');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -89,9 +97,11 @@ export function SquareBoard({ board }: Props) {
         throw new Error(data.error || 'Failed to assign teams');
       }
 
-      window.location.reload();
+      const updatedBoard = await response.json();
+      setBoard(updatedBoard);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to assign teams');
+    } finally {
       setIsLoading(false);
     }
   };

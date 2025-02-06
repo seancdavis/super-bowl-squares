@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     await updateBoard(board.id, updatedBoard as Board);
 
-    return new Response(JSON.stringify({ success: true }));
+    return new Response(JSON.stringify(updatedBoard));
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Failed to assign teams' }), { status: 500 });
   }
