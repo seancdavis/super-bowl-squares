@@ -10,9 +10,9 @@ export function CreateBoard() {
 
     try {
       const response = await fetch('/api/board/create', {
-        method: 'POST'
+        method: 'POST',
       });
-      
+
       if (!response.ok) {
         const data = await response.json();
         setError(data.error || 'Error creating board');

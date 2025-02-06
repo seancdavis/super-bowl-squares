@@ -40,23 +40,19 @@ export interface Board {
 }
 
 export async function getBoard(id: string): Promise<Board | null> {
-  const { data, error } = await supabase
-    .from('boards')
-    .select('*')
-    .eq('id', id)
-    .single();
+  const { data, error } = await supabase.from('boards').select('*').eq('id', id).single();
 
   if (error) {
     console.error('Error fetching board:', error);
     return null;
   }
-  
+
   return data as Board;
 }
 
 export async function createBoard(board: Board): Promise<void> {
   const { error } = await supabase.from('boards').insert([board]);
-  
+
   if (error) {
     console.error('Error creating board:', error);
     throw error;
@@ -64,11 +60,8 @@ export async function createBoard(board: Board): Promise<void> {
 }
 
 export async function updateBoard(id: string, board: Board): Promise<void> {
-  const { error } = await supabase
-    .from('boards')
-    .update(board)
-    .eq('id', id);
-    
+  const { error } = await supabase.from('boards').update(board).eq('id', id);
+
   if (error) {
     console.error('Error updating board:', error);
     throw error;

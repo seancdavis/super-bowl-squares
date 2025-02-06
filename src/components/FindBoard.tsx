@@ -9,7 +9,7 @@ export function FindBoard() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     try {
       const response = await fetch(`/api/board/${boardId.toUpperCase()}`);
       if (!response.ok) {
@@ -17,7 +17,7 @@ export function FindBoard() {
         setError(data.error || 'Board not found');
         return;
       }
-      
+
       window.location.href = `/board/${boardId.toUpperCase()}`;
     } catch (err) {
       setError('Failed to find board');

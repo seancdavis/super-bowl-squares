@@ -47,8 +47,8 @@ export function SquareBoard({ board }: Props) {
       const updatedBoard = {
         ...board,
         squares: {
-          ...board.squares
-        }
+          ...board.squares,
+        },
       };
       delete updatedBoard.squares[position];
       await updateBoard(board.id, updatedBoard);
@@ -70,8 +70,8 @@ export function SquareBoard({ board }: Props) {
       ...board,
       squares: {
         ...board.squares,
-        [position]: name
-      }
+        [position]: name,
+      },
     };
     await updateBoard(board.id, updatedBoard);
     window.location.reload();
@@ -89,13 +89,13 @@ export function SquareBoard({ board }: Props) {
       teams: {
         axis1: {
           team: shuffledTeams[0],
-          numbers
+          numbers,
         },
         axis2: {
           team: shuffledTeams[1],
-          numbers: numbers2
-        }
-      }
+          numbers: numbers2,
+        },
+      },
     };
 
     await updateBoard(board.id, updatedBoard);
@@ -131,7 +131,7 @@ export function SquareBoard({ board }: Props) {
         {owner && (
           <>
             <span className="text-sm">{owner}</span>
-            {winningQuarters.map(q => (
+            {winningQuarters.map((q) => (
               <span key={q} className="text-lg">
                 {q === 'q1' ? '1️⃣' : q === 'q2' ? '2️⃣' : q === 'q3' ? '3️⃣' : '4️⃣'}
               </span>
@@ -157,9 +157,7 @@ export function SquareBoard({ board }: Props) {
       {showNameInput ? (
         <form onSubmit={handleNameSubmit} className="bg-white p-8 rounded-lg shadow-md space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Your Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
             <input
               type="text"
               value={name}
@@ -180,7 +178,7 @@ export function SquareBoard({ board }: Props) {
           {board.state === 'choosing' && (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <p>
-                You have selected {Object.values(board.squares).filter(n => n === name).length} of{' '}
+                You have selected {Object.values(board.squares).filter((n) => n === name).length} of{' '}
                 {board.maxSquaresPerContestant} squares
               </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
@@ -198,9 +196,7 @@ export function SquareBoard({ board }: Props) {
                 ))}
                 {board.teams.axis2.numbers.map((n, i) => (
                   <React.Fragment key={i}>
-                    <div className="p-4 font-bold text-right">
-                      {n}
-                    </div>
+                    <div className="p-4 font-bold text-right">{n}</div>
                     {board.teams.axis1.numbers.map((_, j) => renderSquare(i, j))}
                   </React.Fragment>
                 ))}
@@ -215,9 +211,7 @@ export function SquareBoard({ board }: Props) {
                 ))}
                 {Array.from({ length: 10 }).map((_, i) => (
                   <React.Fragment key={i}>
-                    <div className="p-4 font-bold text-right">
-                      ?
-                    </div>
+                    <div className="p-4 font-bold text-right">?</div>
                     {Array.from({ length: 10 }).map((_, j) => renderSquare(i, j))}
                   </React.Fragment>
                 ))}

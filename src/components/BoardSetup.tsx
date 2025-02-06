@@ -30,7 +30,7 @@ export function BoardSetup({ board }: Props) {
       ...board,
       displayName,
       maxSquaresPerContestant: max,
-      state: 'choosing'
+      state: 'choosing',
     };
 
     await updateBoard(board.id, updatedBoard);
@@ -40,12 +40,10 @@ export function BoardSetup({ board }: Props) {
   return (
     <div className="bg-white p-8 rounded-lg shadow-md">
       <h1 className="text-3xl font-bold mb-8">Set Up Your Board</h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Board Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Board Name</label>
           <input
             type="text"
             value={displayName}

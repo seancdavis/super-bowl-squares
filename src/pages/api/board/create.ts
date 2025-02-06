@@ -11,20 +11,17 @@ export const POST: APIRoute = async () => {
       displayName: '',
       maxSquaresPerContestant: 0,
       state: 'setup',
-      squares: {}
+      squares: {},
     };
 
     await createBoard(board);
     return new Response(null, {
       status: 302,
       headers: {
-        Location: `/board/${boardId}`
-      }
+        Location: `/board/${boardId}`,
+      },
     });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: 'Failed to create board' }), 
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to create board' }), { status: 500 });
   }
 };
