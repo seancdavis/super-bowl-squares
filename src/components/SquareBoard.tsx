@@ -113,6 +113,13 @@ export function SquareBoard({ board: initialBoard }: Props) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleSwitchContestant = () => {
+    setName('');
+    setShowNameInput(true);
+    setError('');
+    localStorage.removeItem(`squares-name-${board.id}`);
+  };
+
   const renderSquare = (x: number, y: number) => {
     const position = `${x},${y}`;
     const owner = board.squares[position];
@@ -151,13 +158,22 @@ export function SquareBoard({ board: initialBoard }: Props) {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{board.display_name}</h1>
-        <button
-          onClick={handleShare}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
-          disabled={isLoading}
-        >
-          {copied ? 'Copied!' : 'Share Board'}
-        </button>
+        <div className="space-x-4">
+          <button
+            onClick={handleSwitchContestant}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
+            disabled={isLoading || showNameInput}
+          >
+            Switch Contestant
+          </button>
+          <button
+            onClick={handleShare}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
+            disabled={isLoading}
+          >
+            {copied ? 'Copied!' : 'Share Board'}
+          </button>
+        </div>
       </div>
 
       {showNameInput ? (
