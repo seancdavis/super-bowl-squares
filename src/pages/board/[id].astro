@@ -12,14 +12,18 @@ if (!board) {
 }
 ---
 
-<Layout title={board.displayName || 'Super Bowl Squares'}>
+<Layout title={board.display_name || 'Super Bowl Squares'}>
   <main class="min-h-screen bg-gray-100 p-8">
     <div class="max-w-6xl mx-auto">
-      {board.state === 'setup' ? (
-        <BoardSetup board={board} client:load />
-      ) : (
-        <SquareBoard board={board} client:load />
-      )}
+      {
+        board.state === 'setup' ? (
+          // <BoardSetup board={board} client:load />
+          <div>Board Setup</div>
+        ) : (
+          // <SquareBoard board={board} client:load />
+          <div>Square Board</div>
+        )
+      }
     </div>
   </main>
 </Layout>
