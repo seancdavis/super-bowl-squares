@@ -8,8 +8,8 @@ export const POST: APIRoute = async () => {
     const boardId = generateBoardId();
     const board: Board = {
       id: boardId,
-      displayName: '',
-      maxSquaresPerContestant: 0,
+      display_name: '',
+      max_squares_per_contestant: 0,
       state: 'setup',
       squares: {},
     };

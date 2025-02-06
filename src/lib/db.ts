@@ -15,8 +15,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export interface Board {
   id: string;
-  displayName: string;
-  maxSquaresPerContestant: number;
+  display_name: string;
+  max_squares_per_contestant: number;
   state: 'setup' | 'choosing' | 'teams' | 'locked';
   squares: {
     [key: string]: string; // position -> contestant name

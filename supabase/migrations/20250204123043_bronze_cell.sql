@@ -4,8 +4,8 @@
   1. New Tables
     - `boards`
       - `id` (text, primary key) - 6-character board code
-      - `displayName` (text) - Name of the board
-      - `maxSquaresPerContestant` (integer) - Maximum squares per person
+      - `display_name` (text) - Name of the board
+      - `max_squares_per_contestant` (integer) - Maximum squares per person
       - `state` (text) - Current board state (setup, choosing, teams, locked)
       - `squares` (jsonb) - Map of positions to contestant names
       - `teams` (jsonb) - Team and number assignments
@@ -19,8 +19,8 @@
 
 CREATE TABLE IF NOT EXISTS boards (
   id text PRIMARY KEY,
-  displayName text,
-  maxSquaresPerContestant integer,
+  display_name text,
+  max_squares_per_contestant integer,
   state text,
   squares jsonb DEFAULT '{}'::jsonb,
   teams jsonb,

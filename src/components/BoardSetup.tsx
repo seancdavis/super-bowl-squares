@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function BoardSetup({ board }: Props) {
-  const [displayName, setDisplayName] = useState('');
+  const [display_name, setDisplayName] = useState('');
   const [maxSquares, setMaxSquares] = useState('');
   const [error, setError] = useState('');
 
@@ -15,7 +15,7 @@ export function BoardSetup({ board }: Props) {
     e.preventDefault();
     setError('');
 
-    if (!displayName || !maxSquares) {
+    if (!display_name || !maxSquares) {
       setError('Please fill in all fields');
       return;
     }
@@ -28,8 +28,8 @@ export function BoardSetup({ board }: Props) {
 
     const updatedBoard: Board = {
       ...board,
-      displayName,
-      maxSquaresPerContestant: max,
+      display_name,
+      max_squares_per_contestant: max,
       state: 'choosing',
     };
 
@@ -46,7 +46,7 @@ export function BoardSetup({ board }: Props) {
           <label className="block text-sm font-medium text-gray-700 mb-2">Board Name</label>
           <input
             type="text"
-            value={displayName}
+            value={display_name}
             onChange={(e) => setDisplayName(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Super Bowl Party 2024"
