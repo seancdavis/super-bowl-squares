@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { Board } from '../lib/db';
-import { updateBoard } from '../lib/db';
-import { shuffleArray } from '../lib/utils';
 
 interface Props {
   board: Board;
@@ -10,9 +8,9 @@ interface Props {
 export function SquareBoard({ board }: Props) {
   const [name, setName] = useState('');
   const [showNameInput, setShowNameInput] = useState(true);
-  const [selectedSquares, setSelectedSquares] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const storedName = localStorage.getItem(`squares-name-${board.id}`);
@@ -40,66 +38,61 @@ export function SquareBoard({ board }: Props) {
       return;
     }
 
-    const currentSquares = Object.entries(board.squares).filter(([_, owner]) => owner === name);
-    const isSelected = board.squares[position] === name;
+    setIsLoading(true);
+    setError('');
 
-    if (isSelected) {
-      const updatedBoard = {
-        ...board,
-        squares: {
-          ...board.squares,
+    try {
+      const isSelected = board.squares[position] === name;
+      const endpoint = '/api/board/square';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      };
-      delete updatedBoard.squares[position];
-      await updateBoard(board.id, updatedBoard);
+        body: JSON.stringify({
+          boardId: board.id,
+          position,
+          name,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update square');
+      }
+
       window.location.reload();
-      return;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update square');
+      setIsLoading(false);
     }
-
-    if (currentSquares.length >= board.max_squares_per_contestant) {
-      setError(`You can only select up to ${board.max_squares_per_contestant} squares`);
-      return;
-    }
-
-    if (board.squares[position]) {
-      setError('This square is already taken');
-      return;
-    }
-
-    const updatedBoard = {
-      ...board,
-      squares: {
-        ...board.squares,
-        [position]: name,
-      },
-    };
-    await updateBoard(board.id, updatedBoard);
-    window.location.reload();
   };
 
   const handleAssignTeams = async () => {
-    const teams = ['Chiefs', 'Eagles'] as const;
-    const shuffledTeams = shuffleArray([...teams]);
-    const numbers = shuffleArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    const numbers2 = shuffleArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    setIsLoading(true);
+    setError('');
 
-    const updatedBoard = {
-      ...board,
-      state: 'locked',
-      teams: {
-        axis1: {
-          team: shuffledTeams[0],
-          numbers,
+    try {
+      const response = await fetch('/api/board/assign-teams', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        axis2: {
-          team: shuffledTeams[1],
-          numbers: numbers2,
-        },
-      },
-    };
+        body: JSON.stringify({
+          boardId: board.id,
+        }),
+      });
 
-    await updateBoard(board.id, updatedBoard);
-    window.location.reload();
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to assign teams');
+      }
+
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to assign teams');
+      setIsLoading(false);
+    }
   };
 
   const handleShare = async () => {
@@ -126,6 +119,7 @@ export function SquareBoard({ board }: Props) {
           aspect-square border border-gray-300 p-2 flex flex-col items-center justify-center
           ${board.state === 'choosing' && !owner ? 'cursor-pointer hover:bg-gray-50' : ''}
           ${isSelected ? 'bg-black text-white' : owner ? 'bg-gray-100' : ''}
+          ${isLoading ? 'pointer-events-none' : ''}
         `}
       >
         {owner && (
@@ -145,10 +139,11 @@ export function SquareBoard({ board }: Props) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">{board.display_name}</h1>
+        <h1 className="text-3xl font-bold">{board.displayName}</h1>
         <button
           onClick={handleShare}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
+          disabled={isLoading}
         >
           {copied ? 'Copied!' : 'Share Board'}
         </button>
@@ -163,12 +158,14 @@ export function SquareBoard({ board }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
+              disabled={isLoading}
             />
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
+            className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 disabled:bg-gray-400"
+            disabled={isLoading}
           >
             Continue
           </button>
@@ -179,7 +176,7 @@ export function SquareBoard({ board }: Props) {
             <div className="bg-white p-4 rounded-lg shadow-md">
               <p>
                 You have selected {Object.values(board.squares).filter((n) => n === name).length} of{' '}
-                {board.max_squares_per_contestant} squares
+                {board.maxSquaresPerContestant} squares
               </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
@@ -223,7 +220,8 @@ export function SquareBoard({ board }: Props) {
             <div className="flex justify-center">
               <button
                 onClick={handleAssignTeams}
-                className="bg-black text-white px-8 py-4 rounded-lg text-xl font-bold hover:bg-gray-800"
+                className="bg-black text-white px-8 py-4 rounded-lg text-xl font-bold hover:bg-gray-800 disabled:bg-gray-400"
+                disabled={isLoading}
               >
                 Assign Teams & Numbers
               </button>

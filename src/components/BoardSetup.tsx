@@ -1,40 +1,57 @@
 import { useState } from 'react';
 import type { Board } from '../lib/db';
-import { updateBoard } from '../lib/db';
 
 interface Props {
   board: Board;
 }
 
 export function BoardSetup({ board }: Props) {
-  const [display_name, setDisplayName] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [maxSquares, setMaxSquares] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    if (!display_name || !maxSquares) {
+    if (!displayName || !maxSquares) {
       setError('Please fill in all fields');
+      setIsLoading(false);
       return;
     }
 
     const max = parseInt(maxSquares);
     if (isNaN(max) || max < 1 || max > 100) {
       setError('Maximum squares must be between 1 and 100');
+      setIsLoading(false);
       return;
     }
 
-    const updatedBoard: Board = {
-      ...board,
-      display_name,
-      max_squares_per_contestant: max,
-      state: 'choosing',
-    };
+    try {
+      const response = await fetch('/api/board/setup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: board.id,
+          displayName,
+          maxSquares: max,
+        }),
+      });
 
-    await updateBoard(board.id, updatedBoard);
-    window.location.reload();
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update board');
+      }
+
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update board');
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,10 +63,11 @@ export function BoardSetup({ board }: Props) {
           <label className="block text-sm font-medium text-gray-700 mb-2">Board Name</label>
           <input
             type="text"
-            value={display_name}
+            value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Super Bowl Party 2024"
+            disabled={isLoading}
           />
         </div>
 
@@ -64,6 +82,7 @@ export function BoardSetup({ board }: Props) {
             className="w-full p-2 border border-gray-300 rounded"
             min="1"
             max="100"
+            disabled={isLoading}
           />
         </div>
 
@@ -71,9 +90,10 @@ export function BoardSetup({ board }: Props) {
 
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
+          className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 disabled:bg-gray-400"
+          disabled={isLoading}
         >
-          Create Board
+          {isLoading ? 'Creating Board...' : 'Create Board'}
         </button>
       </form>
     </div>
