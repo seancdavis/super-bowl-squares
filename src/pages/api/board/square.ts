@@ -3,7 +3,7 @@ import { getBoard, updateBoard } from '../../../lib/db';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { boardId, position, name } = await request.json();
+    const { boardId, position, name, remove } = await request.json();
 
     if (!boardId || !position || !name) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
@@ -20,25 +20,42 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const currentSquares = Object.entries(board.squares).filter(([_, owner]) => owner === name);
-    if (currentSquares.length >= board.max_squares_per_contestant) {
-      return new Response(
-        JSON.stringify({ error: `Maximum squares (${board.max_squares_per_contestant}) reached` }),
-        { status: 400 },
-      );
-    }
+    // If we're removing a square, verify it belongs to the current user
+    if (remove) {
+      if (board.squares[position] !== name) {
+        return new Response(JSON.stringify({ error: "Cannot remove another player's square" }), {
+          status: 400,
+        });
+      }
+    } else {
+      // Adding a square - check limits and availability
+      const currentSquares = Object.entries(board.squares).filter(([_, owner]) => owner === name);
+      if (currentSquares.length >= board.max_squares_per_contestant) {
+        return new Response(
+          JSON.stringify({
+            error: `Maximum squares (${board.max_squares_per_contestant}) reached`,
+          }),
+          { status: 400 },
+        );
+      }
 
-    if (board.squares[position]) {
-      return new Response(JSON.stringify({ error: 'Square is already taken' }), { status: 400 });
+      if (board.squares[position]) {
+        return new Response(JSON.stringify({ error: 'Square is already taken' }), { status: 400 });
+      }
     }
 
     const updatedBoard = {
       ...board,
       squares: {
         ...board.squares,
-        [position]: name,
       },
     };
+
+    if (remove) {
+      delete updatedBoard.squares[position];
+    } else {
+      updatedBoard.squares[position] = name;
+    }
 
     await updateBoard(board.id, updatedBoard);
 

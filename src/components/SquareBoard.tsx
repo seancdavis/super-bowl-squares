@@ -55,6 +55,7 @@ export function SquareBoard({ board: initialBoard }: Props) {
           boardId: board.id,
           position,
           name,
+          remove: isSelected,
         }),
       });
 
@@ -67,7 +68,7 @@ export function SquareBoard({ board: initialBoard }: Props) {
         ...prevBoard,
         squares: {
           ...prevBoard.squares,
-          [position]: name,
+          [position]: isSelected ? undefined : name,
         },
       }));
     } catch (err) {
