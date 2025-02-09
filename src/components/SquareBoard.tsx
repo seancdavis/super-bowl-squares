@@ -178,10 +178,7 @@ export function SquareBoard({ board: initialBoard }: Props) {
       </div>
 
       {showNameInput ? (
-        <form
-          onSubmit={handleNameSubmit}
-          className="bg-white overflow-x-scroll  p-8 rounded-lg shadow-md space-y-4"
-        >
+        <form onSubmit={handleNameSubmit} className="bg-white p-8 rounded-lg shadow-md space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
             <input
@@ -213,7 +210,7 @@ export function SquareBoard({ board: initialBoard }: Props) {
             </div>
           )}
 
-          <div className="bg-white p-8 rounded-lg shadow-md">
+          <div className="bg-white p-8 rounded-lg overflow-x-scroll shadow-md">
             {board.teams ? (
               <div className="grid grid-cols-[auto_repeat(10,1fr)]">
                 <div className="col-span-12 text-center font-bold mb-2">
